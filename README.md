@@ -6,8 +6,8 @@
 - IBD in humans is a good dataset as it has not been used by many groups
 - Compare different contexts (ie., Halfvarson contains more body sites while Ryan only investigates the colon; combine the datasets and compare across body sites)
 - Ryan dataset is good in that one could compare microbial differences at different locations on the body, investigate inflammation, etc.
-    Quality control has not been done - no manifest file
-- Work alongside Chris while initially handling this dataset
+  - Quality control has not been done - no manifest file
+  - Work alongside Chris while initially handling this dataset
 
 **Create a list of aims for the overall project**
 - It is not necessary to meet all of the goals set for the project
