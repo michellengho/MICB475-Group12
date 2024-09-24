@@ -17,4 +17,4 @@
 - 10-15 samples per category (minimum 3) - recognize limits in limitation section
 - Metadata analysis: examine p values for significance - more statistics/modeling, less biological interpretation - significant results are not required
 
-**MH**
+***MH - Changes made on 2024-Sep-24***
