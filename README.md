@@ -1,4 +1,4 @@
-# MICB475-Group12
+# 475: Data Science Reserach in Microbiology
 
 ## 2024-Sep-24
 
