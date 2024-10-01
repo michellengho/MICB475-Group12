@@ -22,5 +22,27 @@
 - Discuss action items, delagation of tasks, timeline, and potential other meeting time
 
 ## Meeting Notes
+- Smoking and biopsy location integrate well into one another; examine community differences in smoking status, enriching inflammatory microbes
+  - Compare sex: male and female
+  - Check if the presence of inflammation is associated with different microbes
+- Ryan dataset will be of better use
+- Cannot combine with the Halfvarson dataset due to no similar variables
+- Discuss confounding variables - examine literature
+  - Sex
+ 
+- Look at metadata statistics to narrow down the research question
+
+  - Aim 1: Correlation between smoking, inflammation, and condition (compare groups based on sex)
+    - DC microbiome
+  - Aim 2: Community and diversity differences (richness indices, PCA plot); combine the conditional statments to compare and group into categories
+    - Create new metadata file
+  - Aim 3: Only pursue the significant results for further analysis with biopsy location
+    - Create a diversity metrics matrix to examine significance between groups at different locations
+      - Separate richness for each item in the matrix
+      - Make one for each sex
+  - Aim 4: Check for inflammatory microbes that are associated with each condition
 
 ## Action Items
+- Make metadata for categories first
+- Go through QC - create new manifest
+- Create figures and split writing for the proposal
