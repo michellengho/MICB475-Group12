@@ -1,4 +1,4 @@
-# 475: Data Science Reserach in Microbiology
+# 475: Data Science Research in Microbiology
 
 ## Meeting Agendas and Minutes
 # September
