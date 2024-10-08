@@ -15,14 +15,16 @@
 - QIIME pipeline - Tentatively by Tuesday, October 15 morning
   - Meet Wednesday, 12:30 pm
 
+- Weekly agenda and meeting minutes - *Michelle*
+
  **Proposal**
-- Introduction and Background - Michelle
-- Research Objectives - Sherin & Wei-Wei
-- Experimental Aims and Rationale - Sherin & Wei-Wei
-- Proposed Approach - Amy 
-- Overview Flowchart - Arian
-- Weekly Timeframe - together (meeting on Tuesday)
-- Dataset Overview (post-QIIME) - Amy, Wei-Wei
+- Introduction and Background - *Michelle*
+- Research Objectives - *Sherin & Wei-Wei*
+- Experimental Aims and Rationale - *Sherin & Wei-Wei*
+- Proposed Approach - *Amy* 
+- Overview Flowchart - *Arian*
+- Weekly Timeframe - *Together (meeting on Tuesday)*
+- Dataset Overview (post-QIIME) - *Amy, Wei-Wei*
 
 
 
