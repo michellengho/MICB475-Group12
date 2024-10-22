@@ -13,6 +13,7 @@
 - Q: Heat map and incorporating alpha and beta diversity
 - A: Alpha diversity for heatmap, beta diversity for PCoA plot; present on specific microbes
 - Create diversity figures first before statistical analysis
+- Generate figures in a presentation format to show all data for next week's meeting
 
 ## Action Items
 - Aim 1: alpha and beta diversity on smoking and inflammation: look at all diversity metrics (Shannon, etc.): *Sherin* & *Amy*
