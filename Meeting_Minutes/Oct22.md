@@ -10,7 +10,9 @@
 - Observed features could be plotted for richness
 - Q: Remember the feature classification QIIME code from last week, it doesn’t work because it doesn’t have a reverse option
 - A: Having 2 truncation lengths is unusual: review  step and potentially redo QIIME-2 pipeline at truncation length of 140 (shorter of the 2)
-- 
+- Q: Heat map and incorporating alpha and beta diversity
+- A: Alpha diversity for heatmap, beta diversity for PCoA plot; present on specific microbes
+- Create diversity figures first before statistical analysis
 
 ## Action Items
 - Aim 1: alpha and beta diversity on smoking and inflammation: look at all diversity metrics (Shannon, etc.): *Sherin* & *Amy*
