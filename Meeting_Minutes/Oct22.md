@@ -9,7 +9,7 @@
 - Start looking at the data and assign action items
 - Observed features could be plotted for richness
 - Q: Remember the feature classification QIIME code from last week, it doesn’t work because it doesn’t have a reverse option
-- A: Having 2 truncation lengths is unusual: review this step and potentially redo QIIME-2 pipeline at truncation length of 140 (shorter of the 2)
+- A: Having 2 truncation lengths is unusual: review  step and potentially redo QIIME-2 pipeline at truncation length of 140 (shorter of the 2)
 - 
 
 ## Action Items
