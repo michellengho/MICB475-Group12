@@ -1,5 +1,8 @@
 # 475: Data Science Research in Microbiology
 
+## Timeline
+![alt text](https://github.com/michellengho/MICB475-Group12/blob/main/Timeline.png)
+
 ## Meeting Agendas and Minutes
 ### September
 [September 24, 2024](https://github.com/michellengho/MICB475-Group12/blob/main/Meeting_Minutes/Sep24.md)
