@@ -13,7 +13,8 @@
 - 
 
 ## Action Items
-- Aims 1 & 2: alpha and beta diversity on smoking and inflammation: look at all diversity metrics (Shannon, etc.)
-- PCoA plots (weighted and unweighted)
+- Aim 1: alpha and beta diversity on smoking and inflammation: look at all diversity metrics (Shannon, etc.): *Sherin* & *Amy*
+- Aim 2: alpha and beta diversity on smoking: *Arian* & *Wei-Wei*
+- PCoA plots (weighted and unweighted) 
 - Distance metrics 
 - Core microbiome
