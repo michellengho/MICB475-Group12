@@ -1,6 +1,7 @@
 ssh root@10.19.139.191
 Biome3002
 
+
 ## Create manifest.csv 
 
 Use less, if two column, for file path: paired, if it is single absolute, one will be single. 
@@ -17,18 +18,9 @@ qiime tools import \
   --output-path demux_seqs.qza
 
 
+
 All the sequences are paired-end right? I used less to check and ours is indeed pair end!
 
-
-OR can do demultiplexing separately
-
-## Demultiplexing
-qiime demux emp-paired-end \
-  --i-seqs emp-paired-end-sequences.qza \
-  --m-barcodes-file /data/project2_data/new_ryan_metadata.tsv\
-  --m-barcodes-column barcode-sequence \
-  --o-per-sample-sequences demux_seqs.qza \
-  --o-error-correction-details demux-details.qza
 
 # Create visualization of demultiplexed samples
 qiime demux summarize \
@@ -36,6 +28,7 @@ qiime demux summarize \
   --o-visualization demux_seqs.qzv
 
 scp root@ssh root@10.19.139.191:/data/project2_data/demux_seqs.qzv .
+
 
 screen -S denoise3
 screen -r denoise3
@@ -48,6 +41,16 @@ qiime dada2 denoise-paired \
   --o-representative-sequences rep-seqs.qza \
   --o-table table.qza \
   --o-denoising-stats stats.qza
+
+Chris-
+qiime dada2 denoise-paired \
+  --i-demultiplexed-seqs demux_seqs.qza \
+  --p-trim-right-f 140 \
+  --p-trim-right-r 140 \
+  --o-representative-sequences rep-seqs.qza \
+  --o-table table.qza \
+  --o-denoising-stats stats.qza
+
 
 screen -S visualize_stats
 
@@ -88,23 +91,10 @@ screen -r denoise3
 screen -S fc
 screen -r fc
 
-qiime feature-classifier extract-reads \
-  --i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \
-  --p-f-primer TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG  \
-  --p-r-primer GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAGGACTACHVGGGTATCTAATCC \
-  --p-trunc-len 140 \
-  --o-reads ref-seqs-trimmed.qza
-
 qiime feature-classifier extract-reads \ --i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \ --p-f-primer CCTACGGGNGGCWGCAG \ --p-r-primer GACTACHVGGGTATCTAATCC \ --p-trunc-len 140 \ --o-reads ref-seqs-trimmed.qza
 
 screen -S fcfcnb
 screen -r fcfcnb
-
-qiime feature-classifier fit-classifier-naive-bayes \
-  --i-reference-reads ref-seqs-trimmed.qza \
-  --i-reference-taxonomy
-/mnt/datasets/silva_ref_files/silva-138-99-tax.qza \
-  --o-classifier classifier.qza
 
 qiime feature-classifier fit-classifier-naive-bayes \ --i-reference-reads ref-seqs-trimmed.qza \ --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \ --o-classifier classifier.qza
 
