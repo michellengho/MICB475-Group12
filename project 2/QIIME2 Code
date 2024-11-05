@@ -38,9 +38,9 @@ qiime dada2 denoise-paired \
   --i-demultiplexed-seqs demux_seqs.qza \
   --p-trunc-len-f 300 \
   --p-trunc-len-r 300 \
-  --o-representative-sequences rep-seqs3.qza \
-  --o-table table3.qza \
-  --o-denoising-stats stats4.qza
+  --o-representative-sequences rep-seqs.qza \
+  --o-table table.qza \
+  --o-denoising-stats stats.qza
 
 
 screen -S visualize_stats
