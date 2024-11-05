@@ -1,6 +1,8 @@
 ssh root@10.19.139.191
 Biome3002
 
+scp root@ssh root@10.19.139.191:/data/project2_data/demux_seqs.qza .
+
 
 ## Create manifest.csv 
 
