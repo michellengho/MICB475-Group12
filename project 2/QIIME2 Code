@@ -33,23 +33,14 @@ scp root@ssh root@10.19.139.191:/data/project2_data/demux_seqs.qzv .
 screen -S denoise3
 screen -r denoise3
   
-qiime dada2 denoise-paired \
-  --i-demultiplexed-seqs demux_seqs.qza \
-  --p-trunc-len-f 140 \
-  --p-trim-left-r 0 \
-  --p-trunc-len-r 140 \
-  --o-representative-sequences rep-seqs.qza \
-  --o-table table.qza \
-  --o-denoising-stats stats.qza
 
-Chris-
 qiime dada2 denoise-paired \
   --i-demultiplexed-seqs demux_seqs.qza \
-  --p-trim-right-f 140 \
-  --p-trim-right-r 140 \
-  --o-representative-sequences rep-seqs.qza \
-  --o-table table.qza \
-  --o-denoising-stats stats.qza
+  --p-trunc-len-f 300 \
+  --p-trunc-len-r 300 \
+  --o-representative-sequences rep-seqs3.qza \
+  --o-table table3.qza \
+  --o-denoising-stats stats4.qza
 
 
 screen -S visualize_stats
