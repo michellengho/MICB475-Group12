@@ -1,5 +1,4 @@
-# Load libraries and data  
-
+# Load libraries and data
 ```{r setup, include=FALSE}
 # Syntax for most required packages
 install.packages("tidyverse")
