@@ -1,5 +1,3 @@
-BETA Diversity R
-
 library(phyloseq)
 library(ape)
 library(tidyverse)
