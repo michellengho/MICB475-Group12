@@ -1,0 +1,276 @@
+# Load libraries and data  
+
+```{r setup, include=FALSE}
+# Syntax for most required packages
+install.packages("tidyverse")
+source('http://bioconductor.org/biocLite.R')
+biocLite('phyloseq')
+install.packages("randomcoloR")
+install.packages("ggpubr")
+
+library(tidyverse) # For all  basic data wrangling and plotting needs
+library(phyloseq) # Indispensable package for microbiome analyses
+library(ggpubr)
+library(randomcoloR)
+library(randomcoloR)
+library(ape)
+
+# Create phyloseq object with meta, otu, taxa, and tree files
+metafp <- "ryan_metadata_new.tsv"
+meta <- read_delim(metafp, delim="\t")
+conditions <- c("Ulcerative Colitis/Smoker", "Crohn's Disease/Smoker")
+meta <- filter(meta, combined_condition %in% conditions)
+
+otufp <- "feature-table.txt"
+otu <- read_delim(file = otufp, delim="\t", skip=1)
+
+taxfp <- "taxonomy.tsv"
+tax <- read_delim(taxfp, delim="\t")
+
+phylotreefp <- "tree.nwk"
+phylotree <- read.tree(phylotreefp)
+class(phylotree)
+
+# Save everything except first column (OTU ID) into a matrix
+otu_mat <- as.matrix(otu[,-1])
+# Make first column (#OTU ID) the rownames of the new matrix
+rownames(otu_mat) <- otu$`#OTU ID`
+# Use the "otu_table" function to make an OTU table
+OTU <- otu_table(otu_mat, taxa_are_rows = TRUE)
+class(OTU)
+
+# Save everything except sampleid as new data frame
+samp_df <- as.data.frame(meta[,-1])
+
+# Make sampleids the rownames
+rownames(samp_df)<- meta$`sample-id`
+# Make phyloseq sample data with sample_data() function
+SAMP <- sample_data(samp_df)
+class(SAMP)
+
+# Convert taxon strings to a table with separate taxa rank columns
+tax_mat <- tax %>% select(-Confidence)%>%
+  separate(col=Taxon, sep="; "
+           , into =
+             c("Domain","Phylum","Class","Order","Family","Genus","Species")) %>%
+  as.matrix() # Saving as a matrix
+# Save everything except feature IDs
+tax_mat <- tax_mat[,-1]
+# Make sampleids the rownames
+rownames(tax_mat) <- tax$`Feature ID`
+# Make taxa table
+TAX <- tax_table(tax_mat)
+class(TAX)
+
+# Merge all into a phyloseq object
+phylo <- phyloseq(OTU, SAMP, TAX, phylotree)
+
+```
+
+<!-- ```{r Check root dir} -->
+<!-- getwd() # Check that the above command worked. If not, try changing opts_knit to opts_chunk. -->
+<!-- ``` -->
+
+In my working directory, I have my output .biom file from QIIME2 and my metadata text file. We'll load those now.
+
+```{r Load Data SKIP THIS IF YOU HAVE PHYLOSEQ OBJECT}
+# phylo <- import_biom("table-with-taxonomy.biom") # Imports as a 'phyloseq' object
+# metadata  <- import_qiime_sample_data("sample_metadata.txt") # This is imported as a 'sample_data' object, which is specific for phyloseq objects.
+
+View(phylo) # sam_data is currently empty
+head(phylo@otu_table) # This is our count table. Note that counts are per OTU (distinct DNA sequence)
+head(phylo@tax_table) # This is our taxonomy table
+
+#~~~~~~~~~~~~~ Fixing taxonomy
+# The taxonomy is currently listed as Rank 1, 2, etc. Let's add the correct terms
+colnames(tax_table(phylo)) <- c("Kingdom", "Phylum", "Class","Order", "Family",
+                                 "Genus", "Species")
+head(tax_table(phylo))
+
+#~~~~~~~~~~~~~ Adding metadata
+
+head(metadata) # We don't need X.Sample.ID and barcode.sequence - let's remove them
+# Format is dataset[select_rows,select_columns]
+metadata = metadata[,c('Experiment','Fraction')] # Nothing before the comma means we want all the rows
+head(metadata) # Looks nice and tidy!
+
+# Add metadata to the phyloseq object
+phylo@sam_data = metadata
+```
+
+# Initial Data Processing
+
+```{r Data Filtering}
+
+# Let's see how our sequencing depth looks
+hist(sample_sums(phylo),breaks = 30) # Quite a few samples have less than 1000 reads.
+hist(log10(sample_sums(phylo)),breaks = 30) # Log plot shows us that many samples have between 10 and 100 reads.
+
+table(below_1000 = sample_sums(phylo)<=1000,
+      expt = phylo@sam_data$combined_condition) # The FMT samples are fine, but the PD samples are problematic.
+
+# Let's use the FMT study for this tutorial, and remove the 1 sample with counts under 1000.
+phylo = prune_samples(sample_sums(phylo) >= 1000, phylo)
+
+table(below_1000 = sample_sums(phylo)<=1000,
+      expt = phylo@sam_data$combined_condition) # Perfect!
+```
+
+The phyloseq object is automatically created at the OTU level (distinct DNA sequences), which is not very informative. Let's aggregate the data to the Family level for our analysis.
+
+```{r Extract Family Level Data}
+family = tax_glom(phylo,'Family')
+ntaxa(phylo); ntaxa(family) # Far fewer bugs to test!
+```
+
+## Optional filtering
+
+Depending on the tool, it may or may not be prudent to pre-filter your datasets for average abundance and/or prevalence.
+
+```{r Optional Filtering: Abundance, eval=FALSE, include=FALSE}
+# First you define a function designed to work on a vector. For each x in the input vector, x will be divided by the sum of all x's in the vector.
+calculate_relative_abundance <- function(x) x / sum(x)
+
+# We'll only include things that are at least 0.1% abundant (0.001) across all samples
+total_counts <- taxa_sums(family) # Total sum for that taxa
+relative_abundance <- calculate_relative_abundance(total_counts) # overall proportion of each bug
+abundant <- relative_abundance > 0.001 # is each bug above the threshold? TRUE if so.
+family <- prune_taxa(abundant, family) # Take only bugs above threshold
+family # Now there are only 30 taxa, compared to 91 before filtration.
+```
+
+Prevalence is usually addressed by the tool and is rarely needed.
+
+```{r Optional Filtering: Prevalence, eval=FALSE, include=FALSE}
+
+```
+
+# Differential Abundance Tools
+
+We'll include basic settings, but I highly recommend reading through the function definitions to see all the options and use cases.
+
+## ANCOM-BC
+
+```{r run ANCOM-BC}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("ANCOMBC")
+library(ANCOMBC)
+
+# Input 
+ancom.family = ancombc(phyloseq = family, # Raw counts
+                       formula = 'combined_condition', # The explanatory variable
+                       p_adj_method = "fdr",
+                       prv_cut=0.10, # Max proportion of zeros allowed per taxon
+                       lib_cut = 1000, # Can filter out samples below minimum seq depth here
+                       group = 'combined_condition', # If you're including structural zeros below, you need this
+                       struc_zero = T) # If true, any taxa present in only 1 category of 'group' will automatically be significant
+str(ancom.family)
+View(ancom.family)
+
+#results = format_ancom_results(ancom.family,family,level_letter = 'f')
+```
+
+
+Now that we've successfully run ANCOM-BC, let's extract the adjusted count tables (adjusted for sampling bias) and put all the results into one table.
+
+```{r Concatenate results}
+# First we need to update the column names for each part of the results, because they're currently all the same.
+colnames(ancom.family$res$lfc) = paste(colnames(ancom.family$res$lfc),'_beta',sep='')
+colnames(ancom.family$res$se) = paste(colnames(ancom.family$res$se),'_se',sep='')
+colnames(ancom.family$res$W) = paste(colnames(ancom.family$res$W),'_W',sep='')
+colnames(ancom.family$res$p_val) = paste(colnames(ancom.family$res$p_val),'_p_val',sep='')
+colnames(ancom.family$res$q_val) = paste(colnames(ancom.family$res$q_val),'_q_val',sep='')
+colnames(ancom.family$res$diff_abn) = paste(colnames(ancom.family$res$diff_abn),'_diff_abn',sep='')
+
+# First, we'll use lapply to apply a function to each item in a list.
+# For each item, the row names will be converted into a column called 'OTU'.
+# We then convert to a tibble (similar to a data frame, but with more flexibility)
+# Finally, we use reduce to collapse the list into a single table using full_join.
+# Full_join will combine the tables by any shared columns (OTU, in this case) without
+# accidentally removing any data.
+results = lapply(ancom.family$res,function(x) rownames_to_column(x,'Family')) %>% 
+  lapply(as_tibble) %>% reduce(full_join)
+
+# Let's also get rid of the (Intercept) terms - they're not useful.
+results = results %>% dplyr::select(-contains('Intercept'))
+
+# Let's also get rid of the prefix 'Fractionpos_', because it annoys me
+srv = Vectorize(str_remove) # This allows it to work on every value in a vector, rather than 1 value at a time
+colnames(results) = srv(colnames(results),'Fractionpos_') # Removes the first instance per value
+view(results)
+```
+
+# Plotting the results
+
+Commonly used normalizations: CLR, TSS (relative abundance)
+
+```{r}
+# These are the significant taxa that we care about:
+
+results <- data.frame(results)
+colnames(results)[11] <- "q_val"
+view(results)
+
+results.sig = results %>% filter(q_val<0.05) # q_val = FDR-adjusted pval
+view(results.sig)
+
+library(dplyr)
+library(readr)
+results.sig <- read_csv("significant_results.csv")
+
+hits = results.sig$Family # 2 hits, cool!
+hits = as.numeric(hits)
+library(microbiome)
+# Transform for relative abundance
+family_tss = family %>% transform('compositional')
+# AFTER transformation, select only the taxa of interest
+selected_taxa <- taxa_names(family)[hits]
+family_tss <- prune_taxa(selected_taxa, family_tss)
+# Extract data into data frame
+family_tss_melt = family_tss %>% psmelt()
+
+view(family_tss_melt)
+
+bug = unique(family_tss_melt$Family)
+# This dataframe is super long - let's pivot it so that each microbe gets its own column.
+# Note that sometimes you get an error saying that there is more than one value per row - this happens when bugs have the same family name, but belong to different taxonomic lineages. The best workaround is to add Order information to the Family column if this happens so that they can be differentiated. This commonly occurs when the family level isn't properly annotated by the software and is left as 'f__'.
+family_tss_melt = family_tss_melt %>% 
+  dplyr::select(-c(OTU,Domain:Order)) %>% # Remove all other levels; they'll interfere
+  pivot_wider(names_from = Family, values_from = Abundance)
+
+# We'll use ggplot2 to make our plots. I don't want to write out 8 different plots and modify them individually, so I'm going to use a for loop here:
+for(b in bug){
+  #b = bug[1]
+  
+  #Just makes the column Fraction to uppercase
+  p = family_tss_melt %>% 
+    mutate(Fraction = str_to_title(combined_condition))
+  
+  #generate random colors!
+  colors = c(randomColor(1), randomColor(1))
+  
+  ggplot(p,aes(x = Fraction, y = p[[b]],fill=Fraction)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(height = 0, width = 0.2) +
+    theme_classic(base_size = 16) +
+    theme(legend.position='none',
+          axis.text.x = element_text(angle = 15, hjust = 1)) +
+    scale_fill_manual(values = colors) +
+    # Add the Padj (q) value from ANCOM-BC in Powerpoint, or hard code it in here
+    scale_fill_manual(values = c("#B6D0E2", "#6082B6")) +  # Specify custom colors
+    xlab('Fraction') + ylab(paste(b,'(% Ab.)',sep=' '))
+  print(p)
+  # ggsave saves the last-generated plot
+  ggsave(paste('tss_new_',b,'.jpeg',sep=''),height = 7,width = 7)
+}
+
+
+
+
+
+
+
+
+
+```
