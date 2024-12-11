@@ -1,0 +1,51 @@
+#install packages
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
+devtools::install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
+library(pairwiseAdonis)
+
+
+meta_subset <- as(sample_data(subset_phyloseq), "data.frame")
+
+# Pairwise PERMANOVA with adjustment for multiple testing
+
+# Pairwise PERMANOVA for Unweighted UniFrac distances
+
+pairwise_results_u <- pairwise.adonis(
+  x = unweighted_unifrac_dist,  # Distance matrix
+  factors = meta_subset$inflammation_and_smoking_combined,  # Grouping variable
+  p.adjust.m = "fdr"  # Adjust p-values with FDR
+)
+
+# View results
+print(pairwise_results_u)
+
+# Save results to a file
+write.csv(pairwise_results_u, "pairwise_permanova_unifrac_unweighted_fixed.csv", row.names = FALSE)
+
+
+# Pairwise PERMANOVA for Weighted UniFrac distances
+pairwise_results_w <- pairwise.adonis(
+  x = weighted_unifrac_dist,  # Distance matrix
+  factors = meta_subset$inflammation_and_smoking_combined,  # Grouping variable
+  p.adjust.m = "fdr"  # Adjust p-values with FDR
+)
+
+# View results
+print(pairwise_results)
+
+# Save results to a file
+write.csv(pairwise_results_w, "pairwise_permanova_unifrac_weighted_fixed.csv", row.names = FALSE)
+
+
+# Pairwise PERMANOVA for Bray Curtis distances
+pairwise_results_bc <- pairwise.adonis(
+  x = bray_curtis_subset,  # Distance matrix
+  factors = meta_subset$inflammation_and_smoking_combined,  # Grouping variable
+  p.adjust.m = "fdr"  # Adjust p-values with FDR
+)
+
+# View results
+print(pairwise_results_bc)
+
+# Save results to a file
+write.csv(pairwise_results_bc, "pairwise_permanova_bc_fixed.csv", row.names = FALSE)
