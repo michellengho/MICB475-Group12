@@ -1,0 +1,16 @@
+"Group1","Group2","R2","p.value","p.adjusted"
+"Inflamed tissue /Non-smoker","Noninflamed tissue /Non-smoker",0.00620045355798308,0.078,0.486666666666667
+"Inflamed tissue /Non-smoker","Inflamed tissue /Smoker",0.00604553903636273,0.513,0.668571428571429
+"Inflamed tissue /Non-smoker","Inflamed tissue /Ex-smoker",0.0101711999402792,0.239,0.486666666666667
+"Inflamed tissue /Non-smoker","Noninflamed tissue /Ex-smoker",0.00863271455005405,0.292,0.486666666666667
+"Inflamed tissue /Non-smoker","Noninflamed tissue /Smoker",0.0050850457600051,0.623,0.668571428571429
+"Noninflamed tissue /Non-smoker","Inflamed tissue /Smoker",0.00598344040568046,0.273,0.486666666666667
+"Noninflamed tissue /Non-smoker","Inflamed tissue /Ex-smoker",0.00741771690873233,0.207,0.486666666666667
+"Noninflamed tissue /Non-smoker","Noninflamed tissue /Ex-smoker",0.00644101016450914,0.288,0.486666666666667
+"Noninflamed tissue /Non-smoker","Noninflamed tissue /Smoker",0.00360435763610536,0.624,0.668571428571429
+"Inflamed tissue /Smoker","Inflamed tissue /Ex-smoker",0.0710659841833941,0.264,0.486666666666667
+"Inflamed tissue /Smoker","Noninflamed tissue /Ex-smoker",0.0441842255851637,0.599,0.668571428571429
+"Inflamed tissue /Smoker","Noninflamed tissue /Smoker",0.0206021930142387,0.599,0.668571428571429
+"Inflamed tissue /Ex-smoker","Noninflamed tissue /Ex-smoker",0.0554048398816593,0.698,0.698
+"Inflamed tissue /Ex-smoker","Noninflamed tissue /Smoker",0.068592653993144,0.1,0.486666666666667
+"Noninflamed tissue /Ex-smoker","Noninflamed tissue /Smoker",0.0540352590351454,0.154,0.486666666666667
