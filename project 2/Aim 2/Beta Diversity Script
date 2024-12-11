@@ -18,7 +18,7 @@ taxonomy <- read_delim(tax, delim = "\t")
 rooted_tree <- "tree.nwk"
 rt <- read.tree(rooted_tree)
 
-## Make Phyloseq object
+## Making the Phyloseq object
 
 #Formatting OTU Table
 otu_mat <- as.matrix(otu[,-1])
@@ -265,6 +265,7 @@ metadata_df <- metadata_df[common_samples, , drop = FALSE]
 unifrac_unweighted_dist <- as.dist(unifrac_unweighted_matrix)
 
 # Perform pairwise PERMANOVA for 'combined_condition'
+
 pairwise_uw_results <- pairwise.adonis2(
   unifrac_unweighted_dist ~ combined_condition,
   data = metadata_df,
@@ -273,6 +274,24 @@ pairwise_uw_results <- pairwise.adonis2(
 
 # Display pairwise results
 print(pairwise_uw_results)
+
+pairwise_bc_results <- pairwise.adonis2(
+  bray_curtis_dist ~ combined_condition,
+  data = metadata_df,
+  permutations = 999
+)
+
+# Display pairwise results
+print(pairwise_bc_results)
+
+pairwise_w_results <- pairwise.adonis2(
+ unifrac_weighted ~ combined_condition,
+  data = metadata_df,
+  permutations = 999
+)
+
+# Display pairwise results
+print(pairwise_w_results)
 
 
 
