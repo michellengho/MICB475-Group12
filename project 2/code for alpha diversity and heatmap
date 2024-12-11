@@ -1,0 +1,293 @@
+library("phyloseq")
+library("tidyverse")
+library("ape")
+library("vegan")
+library("picante")
+
+# Load in the metadata, OTU table, taxonomy file, and phylogenetic tree. 
+meta <- read_delim("ryan_metadata_new.tsv", delim="\t")
+otu <- read_delim(file = "feature-table.txt", delim="\t", skip=1)
+tax <- read_delim("taxonomy.tsv", delim="\t")
+phylotree <- read.tree("tree.nwk")
+
+# Adjust files to be read into a phyloseq object. Make the phyloseq object.
+samp_df <- as.data.frame(meta[,-1])
+rownames(samp_df)<- meta$'sample-id'
+SAMP <- sample_data(samp_df)
+
+otu_mat <- as.matrix(otu[,-1])
+rownames(otu_mat) <- otu$`#OTU ID`
+OTU <- otu_table(otu_mat, taxa_are_rows = TRUE) 
+class(OTU)
+
+taxa_mat <- tax |> 
+  select(-Confidence) |>
+  separate(col = Taxon, sep = "; ",
+           into = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")) |>
+  as.matrix()
+taxa_mat <- taxa_mat[,-1]
+rownames(taxa_mat) <- tax$`Feature ID`
+TAXA <- tax_table(taxa_mat)
+
+TREE <- phy_tree(phylotree)
+
+ryan <- phyloseq(OTU, SAMP, TAXA, TREE)
+
+sample_data(ryan)
+otu_table(ryan)
+tax_table(ryan)
+phy_tree(ryan)
+
+# Remove non-bacterial sequences, if any
+ryan_filt <- subset_taxa(ryan,  Domain == "d__Bacteria" & Class!="c__Chloroplast" & Family !="f__Mitochondria")
+ryan_filt <- subset_samples(ryan, !(inflammation_and_smoking_combined %in% c("Inflamed tissue /Unknown", "Noninflamed tissue /Unknown")))
+
+#filter out unknown category#####
+
+# Rarefy samples
+rarecurve(t(as.data.frame(otu_table(ryan_filt))), cex=0.1)
+ryan_rare <- rarefy_even_depth(ryan_filt, rngseed = 1, sample.size = 2198)
+
+# sample size is decided based on table.qzv and a-rarefaction.qzv
+
+#### Alpha diversity ######
+# plotting Shannon diversity and Chao1 richness indices
+plot_richness(ryan_rare, measures = c("Shannon","Chao1")) 
+
+# Grouping by "inflammation_and_smoking_combined"
+gg_richness <- plot_richness(ryan_rare, 
+                             x = "inflammation_and_smoking_combined", 
+                             measures = c("Shannon", "Chao1")) +
+  xlab("Inflammation and Smoking Combined") +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1))
+
+gg_richness
+
+richness_metrics <- estimate_richness(ryan_rare)
+
+# Add observed features to sample data (the code didn't work specifically for this line)
+sample_data(ryan_rare)$Observed <- richness_metrics$Observed
+
+# Plot observed features
+plot_observed <- ggplot(sample_data(ryan_rare), aes(inflammation_and_smoking_combined, Observed)) + 
+  geom_boxplot() +
+  xlab("Inflammation and Smoking Combined") +
+  ylab("Number of Observed Features (OTUs/ASVs)") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+plot_observed
+
+# phylogenetic diversity
+# calculate Faith's phylogenetic diversity as PD
+phylo_dist <- pd(t(otu_table(ryan_rare)), phy_tree(ryan_rare),
+                 include.root=F) 
+
+# add PD to metadata table
+sample_data(ryan_rare)$PD <- phylo_dist$PD
+
+# plot inflammation_and_smoking_combined against the PD
+plot.pd <- ggplot(sample_data(ryan_rare), aes(inflammation_and_smoking_combined, PD)) + 
+  geom_boxplot() +
+  xlab("Inflammation and Smoking Status") +
+  ylab("Phylogenetic Diversity") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+plot.pd
+
+#save plots
+
+#### Alpha Diversity Significance Testing ####
+library(tidyverse)
+library(phyloseq)
+
+samp_dat_wdiv <- data.frame(sample_data(ryan_rare), estimate_richness(ryan_rare))
+# Check if the data is normally distributed for Shannon diversity
+shapiro.test(samp_dat_wdiv$Shannon) # Shapiro-Wilk test for normality
+
+# If the data is not normally distributed, use Kruskal-Wallis test
+shannon_kw <- kruskal.test(Shannon ~ inflammation_and_smoking_combined, data = samp_dat_wdiv)
+shannon_kw
+#p-value = 0.794, there is no significant difference in Shannon diversity between the different groups in the inflammation_and_smoking_combined factor.
+
+# Check if the data is normally distributed for Chao1 diversity
+shapiro.test(samp_dat_wdiv$Chao1)
+
+# If the data is not normally distributed, use Kruskal-Wallis test
+chao1_kw <- kruskal.test(Chao1 ~ inflammation_and_smoking_combined, data = samp_dat_wdiv)
+chao1_kw
+#p-value = 0.6529, there is no significant difference in chao1 diversity between the different groups in the inflammation_and_smoking_combined factor.
+
+samp_df <- as.data.frame(sample_data(ryan_rare))
+
+# Check normality for Observed features ???didn't work
+shapiro.test(sample_data(ryan_rare)$Observed)
+# Kruskal-Wallis test for Observed features
+kw_result <- kruskal.test(Observed ~ inflammation_and_smoking_combined, data = sample_data(ryan_filt))
+kw_result
+
+# Check normality of PD using Shapiro-Wilk test
+library(phyloseq)
+sample_data_df$PD <- as.numeric(as.character(sample_data_df$PD))
+
+shapiro.test(sample_data_df$PD)
+# Perform Kruskal-Wallis test for PD across the categories of inflammation_and_smoking_combined
+kw_result_pd <- kruskal.test(PD ~ inflammation_and_smoking_combined, data = sample_data(ryan_filt))
+kw_result_pd
+
+install.packages("picante")
+library(picante)
+
+alpha_diversity <- estimate_richness(ryan_rare, measures = "PD")
+head(alpha_diversity)
+
+# plot the inflammation_and_smoking_combined against Shannon
+ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=inflammation_and_smoking_combined, y=Shannon)) +
+  facet_grid(~factor(`inflammation_and_smoking_combined`))
+
+# One-way ANOVA to test differences in Shannon diversity
+anova_result <- aov(Shannon ~ inflammation_and_smoking_combined, data = samp_dat_wdiv)
+summary(anova_result)
+#there is no significant difference in the Shannon diversity among the groups defined by inflammation_and_smoking_combined.
+
+
+#####################
+# Load required libraries
+library(ggplot2)
+library(phyloseq)
+
+# Plot Shannon and Chao1 richness indices, grouped by Smoking_status
+gg_richness <- plot_richness(ryan_rare, 
+                             x = "inflammation_and_smoking_combined", 
+                             measures = c("Shannon", "Chao1")) +
+  geom_boxplot(aes(color = Smoking_status)) +
+  labs(
+    title = "Richness and Diversity Indices by Inflammation and Smoking Status",
+    x = "Inflammation and Smoking Combined",
+    y = "Diversity Index",
+    color = "Smoking Status"
+  ) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1))
+
+gg_richness
+
+# Add observed features to sample data
+richness_metrics <- estimate_richness(ryan_rare)
+sample_data(ryan_rare)$Observed <- richness_metrics$Observed
+
+# Plot observed features by Smoking_status
+plot_observed <- ggplot(sample_data(ryan_rare), 
+                        aes(x = inflammation_and_smoking_combined, 
+                            y = Observed, 
+                            color = Smoking_status)) + 
+  geom_boxplot() +
+  labs(
+    title = "Observed Features by Inflammation and Smoking Status",
+    x = "Inflammation and Smoking Combined",
+    y = "Number of Observed Features (OTUs/ASVs)",
+    color = "Smoking Status"
+  ) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+plot_observed
+
+# Phylogenetic Diversity (Faith's PD)
+phylo_dist <- pd(t(otu_table(ryan_rare)), phy_tree(ryan_rare), include.root = FALSE)
+sample_data(ryan_rare)$PD <- phylo_dist$PD
+
+# Plot phylogenetic diversity by Smoking_status
+plot_pd <- ggplot(sample_data(ryan_rare), 
+                  aes(x = inflammation_and_smoking_combined, 
+                      y = PD, 
+                      color = Smoking_status)) + 
+  geom_boxplot() +
+  labs(
+    title = "Phylogenetic Diversity by Inflammation and Smoking Status",
+    x = "Inflammation and Smoking Combined",
+    y = "Phylogenetic Diversity (Faith's PD)",
+    color = "Smoking Status"
+  ) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+plot_pd
+
+##########################
+# Plot Shannon and Chao1 richness indices, grouped by Smoking_status
+gg_richness <- plot_richness(ryan_rare, 
+                             x = "inflammation_and_smoking_combined", 
+                             measures = c("Shannon", "Chao1")) +
+  geom_boxplot(aes(color = Smoking_status)) +  # Add color for Smoking_status
+  labs(
+    title = "Shannon and Chao1 Richness Indices by Inflammation and Smoking Status",
+    x = "Inflammation and Smoking Combined",
+    y = "Diversity Index",
+    color = "Smoking Status"
+  ) +
+  theme_minimal() +  # Use a clean theme like the one in the image
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1),  # Adjust x-axis labels
+    panel.grid = element_line(color = "gray90")         # Match grid styling
+  )
+
+gg_richness
+
+plot_pd <- ggplot(sample_data(ryan_rare), 
+                  aes(x = inflammation_and_smoking_combined, 
+                      y = PD, 
+                      color = Smoking_status)) + 
+  geom_boxplot() +
+  labs(
+    title = "Phylogenetic Diversity by Inflammation and Smoking Status",
+    x = "Inflammation and Smoking Combined",
+    y = "Phylogenetic Diversity (Faith's PD)",
+    color = "Smoking Status"
+  ) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+plot_pd
+
+
+###################
+# Load necessary libraries
+library(ggplot2)
+library(reshape2)
+
+# Example dataset
+set.seed(123)
+data <- data.frame(
+  Smoking = sample(c("Yes", "No", "Ex"), 200, replace = TRUE),
+  Inflammation = sample(c("Yes", "No"), 200, replace = TRUE)
+)
+
+# Create a summary table of sample sizes
+summary_data <- as.data.frame(table(data$Smoking, data$Inflammation))
+colnames(summary_data) <- c("Smoking", "Inflammation", "Sample_Size")
+
+# Reshape data for the heatmap
+heatmap_data <- dcast(summary_data, Smoking ~ Inflammation, value.var = "Sample_Size")
+
+# Melt the reshaped data for ggplot
+melted_data <- melt(heatmap_data, id.vars = "Smoking", variable.name = "Inflammation", value.name = "Sample_Size")
+
+# Plot the heatmap using ggplot2
+ggplot(melted_data, aes(x = Inflammation, y = Smoking, fill = Sample_Size)) +
+  geom_tile(color = "white") +  # Add white tile borders
+  geom_text(aes(label = Sample_Size), size = 3, color = "black") +  # Add text for sample sizes
+  scale_fill_gradient(low = "#B6D0E2", high = "#6082B6", name = "Sample Size") +  # Color gradient
+  labs(
+    title = "Heatmap of Sample Sizes: Smoking vs. Inflammation",
+    x = "Inflammation Status",
+    y = "Smoking Status"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis text for readability
+    axis.text = element_text(size = 10),  # Set font size for axis labels
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Style the title
+    panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    panel.background = element_rect(fill = "white", colour = NA),  # Light blue background
+    plot.background = element_rect(fill = "white", colour = NA),   # Light blue background for plot
+    axis.line = element_line(colour = "black"),  # Keep axis lines black
+    legend.background = element_rect(fill = "white", colour = NA)  # Light blue background for legend
+  )
+
