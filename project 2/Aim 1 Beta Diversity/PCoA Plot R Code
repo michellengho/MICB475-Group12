@@ -1,0 +1,78 @@
+# Subset the phyloseq object for specified groups
+subset_phyloseq <- subset_samples(
+  ryan_beta_rarefied_filtered, 
+  inflammation_and_smoking_combined %in% c(
+    "Inflamed tissue /Non-smoker",
+    "Noninflamed tissue /Non-smoker",
+    "Inflamed tissue /Smoker",
+    "Noninflamed tissue /Smoker",
+    "Noninflamed tissue /Ex-smoker",
+    "Inflamed tissue /Ex-smoker"
+  )
+)
+
+# ----- Bray Curtis -----
+bray_curtis_subset <- distance(subset_phyloseq, method = "bray")
+
+# Perform PCoA ordination on the Bray-Curtis distance
+pcoa_combined_bc <- ordinate(subset_phyloseq, method = "PCoA", distance = bray_curtis_subset)
+
+# Plot PCoA with ellipses for Bray-Curtis
+gg_pcoa_combined_bc <- plot_ordination(subset_phyloseq, pcoa_combined_bc, color = "inflammation_and_smoking_combined") +
+  geom_point(size = 0.5, alpha = 0.8) +  # Add points with some transparency
+  stat_ellipse(aes(color = inflammation_and_smoking_combined), type = "t", size = 0.5) +  # Add ellipses for each group
+  labs(
+    title = "Bray-Curtis PCoA - Subset Groups with Ellipses",
+    color = "Smoking & Inflammation Status"
+  ) +
+  theme_minimal()
+
+# Display the plot
+gg_pcoa_combined_bc
+
+# Save the plot
+ggsave("pcoa_bray_curtis_with_ellipses.png", gg_pcoa_combined_bc, height = 5, width = 7)
+
+
+# ----- Weighted UniFrac -----
+# Calculate Weighted UniFrac distance
+weighted_unifrac_dist <- distance(subset_phyloseq, method = "UniFrac", weighted = TRUE)
+
+# Perform PCoA ordination
+pcoa_combined_weighted <- ordinate(subset_phyloseq, method = "PCoA", distance = weighted_unifrac_dist)
+
+# Plot Weighted UniFrac PCoA
+gg_pcoa_combined_weighted <- plot_ordination(subset_phyloseq, pcoa_combined_weighted, color = "inflammation_and_smoking_combined") +
+  geom_point(size = 0.5, alpha = 0.8) +  # Add points with some transparency
+  stat_ellipse(aes(color = inflammation_and_smoking_combined), type = "t", size = 0.5) +  # Add ellipses for each group
+  labs(
+    title = "Weighted UniFrac PCoA - Subset Groups with Ellipses",
+    color = "Smoking & Inflammation Status"
+  ) +
+  theme_minimal()
+
+# Display and Save Weighted UniFrac plot
+gg_pcoa_combined_weighted
+ggsave("pcoa_unifrac_weighted_with_ellipses.png", gg_pcoa_combined_weighted, height = 5, width = 7)
+
+
+# ----- Unweighted UniFrac -----
+# Calculate Unweighted UniFrac distance
+unweighted_unifrac_dist <- distance(subset_phyloseq, method = "UniFrac", weighted = FALSE)
+
+# Perform PCoA ordination
+pcoa_combined_unweighted <- ordinate(subset_phyloseq, method = "PCoA", distance = unweighted_unifrac_dist)
+
+# Plot Unweighted UniFrac PCoA
+gg_pcoa_combined_unweighted <- plot_ordination(subset_phyloseq, pcoa_combined_unweighted, color = "inflammation_and_smoking_combined") +
+  geom_point(size = 0.5, alpha = 0.8) +  # Add points with some transparency
+  stat_ellipse(aes(color = inflammation_and_smoking_combined), type = "t", size = 0.5) +  # Add ellipses for each group
+  labs(
+    title = "Unweighted UniFrac PCoA - Subset Groups with Ellipses",
+    color = "Smoking & Inflammation Status"
+  ) +
+  theme_minimal()
+
+# Display and Save Unweighted UniFrac plot
+gg_pcoa_combined_unweighted
+ggsave("pcoa_unifrac_unweighted_with_ellipses.png", gg_pcoa_combined_unweighted, height = 5, width = 7)
