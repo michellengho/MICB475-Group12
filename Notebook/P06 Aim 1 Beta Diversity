@@ -1,0 +1,32 @@
+P06 - Aim 1 Beta Diversity PCoA Plot
+
+Nov 11, 2024
+
+Purpose
+To generate PCoA plots of bray curtis, unweighted and weighted UniFrac distances of gut microbial composition in IBD patients with different smoking and inflammation status, using previously generated phyloseq object.
+
+Material
+ryan_final_rarefied.RData
+(this rarefied ryan dataset is set to sampling depth of 2198)
+
+Method
+Subset the data into 6 different groups (ex-smokers, smokers and non-smokers each paired with inflammed or non-inflammed tissue). Generate distance matrix and plot on PCoA plots, with ellipses to show clusters of groups.
+
+R Script: 
+Path: project 2/Aim 1/Beta Diversity PCoA
+
+Output files:
+Beta Diversity pcoa_bray_curtis_with_ellipses.png
+Beta Diversity pcoa_unifrac_unweighted_with_ellipses.png
+Beta Diversity pcoa_unifrac_weighted_with_ellipses.png
+
+Results:
+All output files are in the file path: project 2/Aim 1/. It was confirmed that only unweighted UniFrac PCoA plot was meaningful to convey no significance.
+Hence, pairwise PERMANOVA was performed on unweighted UniFrac distance matrix, which confirmed all adjusted p-values > 0.05. 
+
+Pairwise PERMANOVA results:
+project 2/Aim 1/ Beta Diversity pairwise_permanova_unifrac_unweighted_fixed.csv
+
+Discussion/Future Direction:
+No significant clusters that showed distinct gut microbial diversity. Samples of different groups cluster together, indicating no significant differences in gut microbial diversity in IBD patients, regardless of smoking and inflammation status.
+Suggests investigating whether smoking differentially affect IBD patients with different subtypes (CD vs. UC) for aim 2. Limitation is the limited sample size for ex-smokers, which could result in restricted reliability of microbial patterns for ex-smokers.
