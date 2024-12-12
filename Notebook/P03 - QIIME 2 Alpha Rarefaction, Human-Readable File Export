@@ -1,1 +1,42 @@
 
+P01 - QIIME 2 Demultiplexing
+
+Nov 16, 2024
+
+Purpose
+To generate alpha rarefaction curve
+To export the table.qza and taxonomy.qza as human readable format
+
+Material
+    QIIME2
+    table.qza
+    taxonomy.qza
+    ryan_metadata_new.tsv (Path in server:/mnt/datasets/project_2/ryan_metadata_new.tsv )
+
+Method:
+
+    Connect to Cisco Anyconnect Secure VPN. Open the terminal and login to MICB 475 class server using the provided login credentials.
+    Create a dedicated directory for project 2: /data/team6_dysautonomia_data
+    Import and demultiplex the dysautonomia dataset using pair-end to create a qza file with demultiplexed samples
+    Create a visualization for the demultiplexed samples
+    Move the demux.qzv file to your local computer directory and view it using the QIIME 2
+
+Code
+  https://github.com/michellengho/MICB475-Group12/blob/main/project%202/QIIME%202%20Code
+
+Output files:
+
+    Path in server: /data/projecy2_data/table_export/tree.nwk
+    Path in server: /data/projecy2_data/table_export/taxonomy.tsv
+    Path in server: /data/projecy2_data/feature-table.txt
+    Path in server: /data/projecy2_data/alpha-rarefaction.qzv
+
+Results
+
+
+
+Discussion:
+
+   
+Future direction:
+Use the output file to generate phyloseq object for subsequent analysis
