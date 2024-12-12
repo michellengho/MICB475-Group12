@@ -26,7 +26,28 @@ Output files:
     Path in server: /data/projecy2_data/demux_seqs.qzv
 
 Results
+
+The same result is generated from samples sequenced from both forward and reverse primers
+
+    Total number of reads: 19263044
+    Total number of samples: 343
+    Range of sequencing depth: 53354.0-238445
+    Maximum read length (bp): 300
+    All the reads the same length of 300 bp
+
+![Screenshot 2024-12-12 112401](https://github.com/user-attachments/assets/61146dc2-f026-49f0-84e2-5a0e56564c31)
 ![Screenshot 2024-12-12 111755](https://github.com/user-attachments/assets/cd7017d1-7725-4d32-93a9-27724541de50)
+![Screenshot 2024-12-12 112656](https://github.com/user-attachments/assets/bbcd25d9-4d84-40f3-bd8d-5daad299a2b5)
+
+Discussion:
+
+    The maximum read depth (bp) was 300 while all 343 samples (the same number of samples using both forward and reverse primers) had 300 bp in length.
+    After demultiplexing, the quality score experiences fall towards the end (esp reverse), hence truncation is necessary
+
+Future direction:
+Denoise sequences using the selected truncation length of 220 bp (median phred score 34) and determine ASVs with DADA2 (outputs: table.qza, stats.qza, rep-seqs.qza)
+
+    Selected truncation length of 280, 214, 140, 300 prior and all did not work out
 
 
 
