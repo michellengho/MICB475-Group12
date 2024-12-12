@@ -1,0 +1,38 @@
+P03 - QIIME 2 Alpha Rarefaction, Human-Readable File Export
+
+Nov 16, 2024
+
+Purpose
+To generate create phyloseq object and filter out the Mitochondria/Chloroplast Sequence
+
+Material
+
+taxonomy.tsv
+feature-table.txt
+ryan_metadata_new.tsv
+
+Method:
+
+    Create a project within R studio for dedicated R works (475_project)
+    Import the taxonomy.tsv, feature-table.txt, and ryan_metadata_new.tsv and format them apropriately to generate a phyloseq object
+    Filter out the chloroplast and mitochondria
+    Remove any ASV with less than 5 counts
+    Rarify samples 
+
+Code
+https://github.com/michellengho/MICB475-Group12/blob/main/project%202/Aim%202/Beta%20Diversity
+
+Output files:
+
+ryan_final_rarefied,.RData
+
+Results
+
+Generated files were zipped and sent to teammates for downstream analysis
+
+Discussion:
+
+Phyloseq object is kept consistently for downstream analysis
+   
+Future direction:
+alpha/beta diversity analysis for Aim1/2, Core microbiome analysis for aim 3
