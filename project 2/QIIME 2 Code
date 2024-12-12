@@ -1,0 +1,110 @@
+## Importing manifest.tsv file and demultiplexing into .qza file
+
+qiime tools import \
+  --type "SampleData[PairedEndSequencesWithQuality]" \
+  --input-format PairedEndFastqManifestPhred33V2 \
+  --input-path /mnt/datasets/project_2/human_ibd/ryan_manifest.tsv \
+  --output-path demux_seqs.qza
+
+# Create visualization of demultiplexed samples
+qiime demux summarize \
+  --i-data demux_seqs.qza \
+  --o-visualization demux_seqs.qzv
+
+## Trimmingthe Illumina adaptors from the reads
+
+qiime cutadapt trim-paired \
+--i-demultiplexed-sequences demux_seqs.qza \
+--p-front-f TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG \
+--p-front-r GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAGGACTACHVGGGTATCTAATCC \
+--p-match-read-wildcards \
+--p-match-adapter-wildcards \
+--p-discard-untrimmed \
+--o-trimmed-sequences 1a_demux_seqs-trimmed.qza \
+--verbose > cutadapt-log-2.txt
+
+screen -S denoise
+qiime dada2 denoise-paired \
+  --i-demultiplexed-seqs 1a_demux_seqs-trimmed.qza \
+  --p-trunc-len-f 220 \
+  --p-trunc-len-r 220 \
+  --o-representative-sequences rep-seqs.qza \
+  --o-table table.qza \
+  --o-denoising-stats stats.qza
+
+
+
+qiime feature-classifier fit-classifier-naive-bayes \ --i-reference-reads /data/project2_data/ref-seqs-trimmed.qza \ --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \ --o-classifier classifier.qza
+
+
+qiime feature-classifier extract-reads \
+--i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \
+--p-f-primer CCTACGGGNGGCWGCAG \
+--p-r-primer GACTACHVGGGTATCTAATCC \
+--p-trunc-len 220 \
+--o-reads ref-seqs-trimmed.qza
+
+
+# Use the trained classifier to assign taxonomy to your reads (rep-seqs.qza)
+qiime feature-classifier classify-sklearn \
+  --i-classifier classifier.qza \
+  --i-reads /mnt/datasets/project_2/human_ibd/HG_files/1b_rep-features-trimmed.qza \
+  --o-classification taxonomy.qza
+
+
+#Create Visualization
+qiime metadata tabulate \
+  --m-input-file taxonomy.qza \
+  --o-visualization taxonomy.qzv
+
+
+# Taxonomy barplots
+qiime taxa barplot \
+  --i-table /data/project2_data/table.qza \
+  --i-taxonomy taxonomy.qza \
+  --m-metadata-file /data/project2_data/ryan_metadata_new.tsv \
+  --o-visualization taxa-bar-plots.qzv
+
+qiime taxa filter-table \
+  --i-table table.qza \
+  --i-taxonomy taxonomy.qza \
+  --p-exclude mitochondria,chloroplast \
+  --o-filtered-table table-no-mitochondria-no-chloroplast.qza
+
+qiime taxa filter-table \
+  --i-table table.qza \
+  --i-taxonomy taxonomy2.qza \
+  --p-exclude Mitochondria,Chloroplast \
+  --o-filtered-table table-no-mitochondria-no-chloroplast.qza
+
+
+
+# Alpha-rarefaction
+qiime diversity alpha-rarefaction \
+  --i-table table.qza \
+  --i-phylogeny rooted-tree.qza \
+  --p-max-depth 8000 \
+  --m-metadata-file /data/project2_data/ryan_metadata_new.tsv \
+  --o-visualization alpha-rarefaction.qzv
+
+
+# Alpha-rarefaction
+qiime diversity alpha-rarefaction \
+  --i-table table.qza \
+  --i-phylogeny rooted-tree.qza \
+  --p-max-depth 6484 \
+  --m-metadata-file /data/project2_data/ryan_metadata_new.tsv \
+  --o-visualization alpha-rarefaction2.qzv
+
+qiime tools export \
+--input-path ~/data/project2_data2/table.qza \
+--output-path table_export 
+
+biom convert \
+-i /data/project2_data2/table_export/feature-table.biom \
+--to-tsv \
+-o feature-table.txt
+
+qiime tools export \
+  --input-path rooted-tree.qza \
+  --output-path /data/project2_data2/table_export/
