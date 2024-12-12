@@ -16,7 +16,9 @@ Material
 Method:
 
     Connect to Cisco Anyconnect Secure VPN. Open the terminal and login to MICB 475 class server using the provided login credentials.
-   
+    Generate the human readable file and export it onto local desktop
+    Generate alpha_rarefaction curve
+    Visualize it via QIIME2 Viewer
 
 Code
   https://github.com/michellengho/MICB475-Group12/blob/main/project%202/QIIME%202%20Code
