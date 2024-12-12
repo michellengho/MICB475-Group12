@@ -1,0 +1,31 @@
+P01 - QIIME 2 Demultiplexing
+
+Sep 24, 2023
+
+Purpose
+To import and sort the 16S rRNA sequences based on barcode information in QIIME2
+
+Material
+    QIIME2
+    ryan_manifest.tsv (Path in server:/mnt/datasets/project_2/human_ibd/ryan_manifest.tsv )
+
+Method:
+
+    Connect to Cisco Anyconnect Secure VPN. Open the terminal and login to MICB 475 class server using the provided login credentials.
+    Create a dedicated directory for project 2: /data/team6_dysautonomia_data
+    Import and demultiplex the dysautonomia dataset using pair-end to create a qza file with demultiplexed samples
+    Create a visualization for the demultiplexed samples
+    Move the demux.qzv file to your local computer directory and view it using the QIIME 2
+
+Code
+  https://github.com/michellengho/MICB475-Group12/blob/main/project%202/QIIME%202%20Code
+
+Output files:
+
+    Path in server: /data/project2_data/demux_seqs.qza
+    Path in server: /data/projecy2_data/demux_seqs.qzv
+
+Results
+
+
+
