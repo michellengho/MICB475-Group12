@@ -33,10 +33,11 @@ Output files:
 
 Results
 
-
+![Screenshot 2024-12-12 120737](https://github.com/user-attachments/assets/4779b55e-e170-47e0-8cb0-335de1bc874d)
 
 Discussion:
 
+Alpha-rarefaction curve generated
    
 Future direction:
 Use the output file to generate phyloseq object for subsequent analysis
