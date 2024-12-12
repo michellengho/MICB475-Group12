@@ -1,0 +1,60 @@
+P02 - QIIME 2 Denoising and Clustering Sequences into ASVs
+
+Nov 15, 2024
+Purpose:
+
+To detect and correct sequencing errors, and to group the sequences into respective ASVs. 
+To generate the taxonomy 
+
+Material:
+
+    QIIME2
+    demux_seqs.qza (/data/project2_data)
+    ryan_metadata_new.tsv (/mnt/datasets/project_2)
+
+  
+
+Method:
+
+    Connect to Cisco Anyconnect Secure VPN. Open the terminal and login to MICB 475 class server using the provided login credentials.
+    Create a detached screen and name it "denoising".
+    Perform qiime cutadapt trim-paired on demux file
+    Denoise and cluster the demultiplexed sequences using DADA2
+    Visualize the ASVs by converting qza files to qzv.
+    Transfer the visualization files to local computer and view the representative sequences and table.qzv using view.QIIME2.org
+
+    Create a detached screen and name it "taxonomic analysis".
+    Align the database.
+    Visualize the taxonomy by converting qza files to qzv.
+   
+
+Code:  https://github.com/michellengho/MICB475-Group12/blob/main/project%202/QIIME%202%20Code
+
+Output files:
+
+/data/project2_data/rep-seqs.qza
+/data/project2_data/table.qza
+/data/project2_data/stats.qza
+
+/data/project2_data/taxonomy.qza
+
+Results: 
+
+    Total number of reads retained: 3,233,812
+    Total number of ASVs: 3,951
+    Total number of samples: 343
+    Range of sequencing depth: 44.0 - 39,623.0
+
+![Screenshot 2024-12-12 115422](https://github.com/user-attachments/assets/8f3f1716-81ad-4701-8293-e2d3428d9643)
+
+Discussion:
+
+Total number of sample did not change
+
+Future direction
+
+Can export the files as human readable format for R studio analysis
+
+
+
+
