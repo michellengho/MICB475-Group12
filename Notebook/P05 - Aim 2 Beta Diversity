@@ -1,0 +1,39 @@
+
+P03 - QIIME 2 Alpha Rarefaction, Human-Readable File Export
+
+Nov 18, 2024
+
+Purpose
+To generate PcoA graph for beta analysis using bray-curtis, unweighted Unifrac, and weighted unifrac distance and perform pairwise PERMANOVA to test their significance
+
+Material
+
+R studio
+ryan_final_rarefied,.RData
+
+Method:
+
+    Subset the data to only contain information for aim2 BETA diversity (UC smoker, UC non-smoker, CD smoker, CD non-smoker)
+
+
+Code
+https://github.com/michellengho/MICB475-Group12/blob/main/project%202/Aim%202/Beta%20Diversity
+
+Output files:
+
+plot_poca_bc_facet.png
+plot_poca_uw_facet.png
+plot_poca_w_facet.png
+
+
+Results
+
+All output fles in /project 2/Aim 2/
+PAIRWISE permanova test revealed that all conditions were significant using BC distance, but not significant using W and UW
+
+Discussion:
+
+In the PCOA plot generated using unweighted unifrac distance,  non-smokers exhibitted overlapping clusters while the smokers exhibitted distinct clusters. 
+
+Future direction:
+Include the graph within the presentation and explain the finding
