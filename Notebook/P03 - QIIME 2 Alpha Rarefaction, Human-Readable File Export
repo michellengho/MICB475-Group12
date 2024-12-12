@@ -16,10 +16,7 @@ Material
 Method:
 
     Connect to Cisco Anyconnect Secure VPN. Open the terminal and login to MICB 475 class server using the provided login credentials.
-    Create a dedicated directory for project 2: /data/team6_dysautonomia_data
-    Import and demultiplex the dysautonomia dataset using pair-end to create a qza file with demultiplexed samples
-    Create a visualization for the demultiplexed samples
-    Move the demux.qzv file to your local computer directory and view it using the QIIME 2
+   
 
 Code
   https://github.com/michellengho/MICB475-Group12/blob/main/project%202/QIIME%202%20Code
