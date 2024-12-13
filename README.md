@@ -14,8 +14,7 @@
 [December 2, 2024](https://github.com/michellengho/MICB475-Group12/blob/main/Meeting_Minutes/Dec2.md)
 
 ## Lab Notebook
-- P01
+[Notebook](https://github.com/michellengho/MICB475-Group12/tree/main/Notebook)
 
-## Finalized Code
-# QIIME2
-# R
+## QIIME2 & R Finalized Code & Outputs
+[QIIME2 Scripts & Outputs](https://github.com/michellengho/MICB475-Group12/tree/main/project%202)
