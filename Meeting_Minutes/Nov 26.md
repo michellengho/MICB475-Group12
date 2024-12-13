@@ -1,6 +1,12 @@
-Showed Evelyn and Chris the updated PPT according to last week's suggeston. 
+# November 26, 2024
 
-Teaching team selected figures to present and suggested the following presentation order:
+## Meeting Agenda
+- Review the updated collection of figures
+- Ask which figures to keep in the manuscript vs. the presentation
+
+## Meeting Notes
+- Showed Evelyn and Chris the updated presentation as per the suggestions from last week
+The teaching team selected figures to present and suggested the following presentation order:
 
 Figure 1: sample size heatmap(method) 
 Figure 2, 4 panels: a-diversity A) chao1, B) shannon, B-diversity: C) unweighted and D) weighted PERMANOVA 
@@ -11,5 +17,8 @@ Figure 6: heatmap for biopsy location
 
 Figure 1S: observed feature & PD 
 
-Overall Storytelling:
+- Overall Storytelling:
 Effect on smoking, disease specific, according to ancom, it is CD that is more impacted, confirmed with heatmap
+
+## Action Items
+- Create final powerpoint for presentation
