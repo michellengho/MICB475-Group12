@@ -1,1 +1,35 @@
+P13 - Aim 3 Heat Map
 
+Nov 12, 2024
+
+Purpose
+To measure gut microbial diversity and composition in IBD patients combined with their smoking stauts in different colon regions, using Alpha diversivty index of Shannon.
+
+Material
+ryan_metadata_new.tsv
+taxonomy.tsv
+feature-table.txt
+tree.nwk
+
+Method
+Subset the data into 4 different groups (UC or CD / Smoker or Non_smoker). Assign alpha diversity values to each sample (Shannon) and plot using geom_tile from ggplot2. 
+
+
+R Script: 
+Path: project 2/Aim 3/Heat_map.R
+
+Output files:
+shannon_heatmap.png
+
+Results:
+In CD patients, smokers exhibited greater microbial diversity compared to non-smokers in the ascending, descending, and right colon but showed lower diversity in the transverse colon. 
+In UC patients, smokers exhibited lower microbial diversity compared to non-smokers in the sigmoid colon. 
+These findings highlight region-specific differences in microbial diversity associated with smoking status and disease condition.
+
+Discussion/Future Direction:
+Smoking impacts microbial diversity more significantly in CD patients than in UC patients. 
+The observed differences in microbial diversity across colon regions emphasize the complexity the interactions within the gut and their potential relevance to disease pathology.
+
+Future work should investigate the mechanisms underlying these region-specific changes in microbial diversity and how they relate to disease progression or treatment response. 
+Functional profiling of the microbes in different colon regions could shine light on how smoking modulates microbiota in CD and UC patients. 
+Expanding the sample size and conducting longitudinal studies would help validate these findings and uncover effects of smoking on gut microbiota.
