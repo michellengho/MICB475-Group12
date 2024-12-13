@@ -7,7 +7,7 @@
 - Preliminary proposal
 
 ## Meeting Notes
-- 
+- Edit metadata file to include combined conditions for our analysis
 
 ## Action Items
 - Metadata file - Tentatively by Tuesday, October 8 morning
