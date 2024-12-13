@@ -1,0 +1,21 @@
+P08 - Aim 3 ANCOM
+
+Nov 20, 2024
+
+Purpose
+To generate box plots plot of differentially abundant microbes, comparing UC or CD smokers and non-smokers, and comparing CD and UC smokers, using previously generated phyloseq object.
+
+Material
+taxonomy.tsv, table.qzv, tree.nwk, ryan_metadata.tsv or previously generated phyloseq object
+
+Method
+
+Path: project 2/Aim 2/Core Microbiome
+
+Output files:
+Core Microbiome core_microbiome.png
+
+Results:
+All output files are in the file path: project 2/Aim 3/.
+
+Discussion/Future Direction:
