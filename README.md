@@ -16,5 +16,5 @@
 ## Lab Notebook
 [Notebook](https://github.com/michellengho/MICB475-Group12/tree/main/Notebook)
 
-## QIIME2 & R Finalized Code & Outputs
+## QIIME2 & R Code & Outputs
 [QIIME2 Scripts & Outputs](https://github.com/michellengho/MICB475-Group12/tree/main/project%202)
