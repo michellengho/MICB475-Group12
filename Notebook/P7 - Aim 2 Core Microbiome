@@ -20,7 +20,9 @@ Core Microbiome core_microbiome.png
 
 Results:
 All output files are in the file path: project 2/Aim 2/. CD and UC smokers exhibited unique core microbes, whereas non-smokers lacked distinct core microbiota.
-It revealed 5 and 6 unique core microbes for UC and CD smokers, respectively, while non-smokers did not exhibit any
+It revealed 5 and 6 unique core microbes for UC and CD smokers, respectively, while non-smokers did not exhibit any.
+The identifiable unique core microbes in UC smokers include families Bacteroidaceae, Peptostreptococcaceae, and Lachnospiraceae. As for CD smokers, Ruminococcaceae comprises the resolved unique core microbe.
+Other microbes are not identifiable to the family level and will thus be excluded from the analysis.
 
 Discussion/Future Direction:
 These significant unique core microbes prompt further investigation to determine differentially abundant microbes using ANCOM for Aim 3. 
