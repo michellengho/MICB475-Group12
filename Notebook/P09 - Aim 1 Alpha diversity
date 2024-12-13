@@ -1,0 +1,37 @@
+P09 - Aim 1 Alpha diversity
+
+Nov 11, 2024
+
+Purpose
+using Alpha diversity indices, including Shannon, Chao1, observed features and faith's phylogenetic distance to measure eveness and richness of gut microbial composition in IBD patients with 6 different smoking and inflammation status, using previously generated phyloseq object.
+
+Material
+ryan_metadata_code.R
+ryan_rare.RData 
+(this rarefied ryan dataset is set to sampling depth of 2198, and filtered out unknown categories, as well as non-bacterial sequences)
+
+Method
+Subset the data into 6 different groups (ex-smokers, smokers and non-smokers each paired with inflammed or non-inflammed tissue). plot Shannon diversity and Chao1 richness indices using ggplot function, as well as plotting observed features and faith's PD using geom_boxplot
+shapiro.test was used to determine if the data is normally distributed, and kruskal.test was used to test significance of each indices.
+
+
+R Script: 
+Path: project 2/Aim 1/Alpha Divsersity and Heatmap
+
+Output files:
+PD.png
+heatmap.png
+ovserved features.png
+shannon and chao1.png
+
+Results:
+All output files are in the file path: project 2/Aim 1/. It was suggested by the teaching team that Shannon should be used to convey no significance.
+kruskal test was performed on Shannon diversity with P= 0.794, which confirmed all adjusted p-values > 0.05 and indicate no significance of Alpha Diversity across 6 groups.
+
+Discussion/Future Direction:
+Smoking and inflammation status showed no significant impact on gut microbial diversity, including richness, evenness, and phylogenetic distance. Shannon diversity revealed no notable differences in microbial diversity or taxonomic composition among smokers, non-smokers, and ex-smokers in either inflamed or non-inflamed tissues.
+These findings suggest that gut microbial diversity remains broadly unaffected by smoking or inflammation status in IBD patients.
+
+Future direction should zoom in closed to the correlation of smoking and diffent IBD subtypes, and investigate how smoking differentially affect CD and UC microbiome for aim 2. 
+Study limitation includes The sample size for smoking status was small and unevenly distributed, with the majority being non-smokers (295 individuals), followed by smokers (35) and ex-smokers (11). 
+This imbalance may reduce the study's ability to draw robust conclusions about the effects of smoking on microbiome diversity, particularly in the UC and CD groups, where non-smokers significantly outnumbered smokers.
