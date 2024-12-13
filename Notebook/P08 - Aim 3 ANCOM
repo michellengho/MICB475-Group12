@@ -3,19 +3,44 @@ P08 - Aim 3 ANCOM
 Nov 20, 2024
 
 Purpose
+The notable influence in core microbes with respect to smoking status prompted further investigation into differentially abundant microbes.
 To generate box plots plot of differentially abundant microbes, comparing UC or CD smokers and non-smokers, and comparing CD and UC smokers, using previously generated phyloseq object.
 
 Material
 taxonomy.tsv, table.qzv, tree.nwk, ryan_metadata.tsv or previously generated phyloseq object
 
 Method
+Analysis of Composition of Microbiomes (ANCOM) was employed to analyze microbial absolute abundances, providing insights into compositional differences between groups. This method is used to compare UC or CD smokers and non-smokers, and CD and UC smokers.
 
 Path: project 2/Aim 2/Core Microbiome
 
 Output files:
-Core Microbiome core_microbiome.png
+tss_new_f__Oscillospiraceae.png
+tss_new_f__Peptostreptococcaceae.png
+tss_f__Erysipelatoclostridiaceae.png
+tss_f__Veillonellaceae
+tss_f__Peptostreptococcales-Tissierellales
+tss_f__Erysipelotrichaceae
+tss_f__Morganellaceae
+tss_f__Sutterellaceae
+tss_f__Streptococcaceae
+tss_f__Clostridiaceae
+tss_f__Bacteroidaceae
+tss_f__Acidaminococcaceae
+tss_f__Tannerellaceae
+tss_f__Campylobacteraceae
 
 Results:
-All output files are in the file path: project 2/Aim 3/.
+All output files are in the file path: project 2/Aim 3/. Tannerellaceae showed greater differential abundance in UC smokers compared to non-smokers.
+ANCOM analysis revealed 5 differentially abundant microbes in UC smokers compared to non-smokers and 9 for CD smokers compared to non-smokers. 
+Clostridiaceae, Tannerellaceae, Campylobacteraceae, Acidaminococcaceae, and Erysipelatoclostridiaceae are more abundant in UC smokers than UC non-smokers. 
+Similarly, Erysipelatoclostridiaceae, Bacteroidaceae, Sutterellaceae, and Veillonellaceae are more abundant in CD smokers than CD non-smokers. 
+Conversely, Clostridiaceae, Streptococcaceae, Morganellaceae, Peptostreptococcales-Tissierellales, and Erysipelotrichaceae are more abundant in CD non-smokers than CD smokers.
+Of these findings, Tannerellaceae exclusively demonstrates significant differential abundance in UC smokers compared to non-smokers 
+
+UC smokers demonstrated more abundant Peptostreptococcaceae and less Oscillospiraceae compared to CD smokers. 
+ANCOM analysis revealed 2 differentially abundant microbes in smokers with UC compared to CD. 
+Peptostreptococcaceae is more abundant in smokers with UC than CD. Contrarily, Oscillospiraceae is more abundant in smokers with CD than UC (Figure 5B).
 
 Discussion/Future Direction:
+There may be implications that drive disease status from these differentially abundant families such as distinct metabolic pathways that drive IBD progression toward CD vs UC. Further investigation into literature is required.
