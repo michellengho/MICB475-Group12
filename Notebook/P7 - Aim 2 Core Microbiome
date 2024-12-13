@@ -1,0 +1,27 @@
+P07 - Aim 2 Core Microbiome
+
+Nov 11, 2024
+
+Purpose
+To generate venn-diagram plot of core microbiome on the four combined conditions of smoking status and disease condition, using previously generated phyloseq object.
+
+Material
+taxonomy.tsv, table.qzv, tree.nwk, ryan_metadata.tsv or previously generated phyloseq object
+
+Method
+Subset the data into 4 groups (Crohn's Disease/Smoker, Crohn's Disease/Non-smoker, Ulcerative Colitis/Smoker, Ulcerative Colitis/Non-smoker)
+The detection is set to 0.01 (1% relative abundance) in order to filter out rare things and only consider those that are somewhat abundant.
+The prevalence threshold is set to 0.65 in order to see differences between groups which means it  has to be present in 65% of samples in that group to be considered.
+
+Path: project 2/Aim 2/Core Microbiome
+
+Output files:
+Core Microbiome core_microbiome.png
+
+Results:
+All output files are in the file path: project 2/Aim 2/. CD and UC smokers exhibited unique core microbes, whereas non-smokers lacked distinct core microbiota.
+It revealed 5 and 6 unique core microbes for UC and CD smokers, respectively, while non-smokers did not exhibit any
+
+Discussion/Future Direction:
+These significant unique core microbes prompt further investigation to determine differentially abundant microbes using ANCOM for Aim 3. 
+It suggests that smoking may affect microbial composition with respect to different disease conditions, UC or CD.
