@@ -1,1 +1,43 @@
+P10 - Aim 2 Alpha diversity
 
+Nov 12, 2024
+
+Purpose
+To measure gut microbial diversity and composition in IBD patients combined with their smoking stauts, using Alpha diversivty indices of Shannon, Faith's PPhylogenetic Diversity, 
+Observed Features, and Chao1.
+
+Material
+ryan_metadata_new.tsv
+taxonomy.tsv
+feature-table.txt
+tree.nwk
+
+Method
+Subset the data into 4 different groups (UC or CD / Smoker or Non_smoker). Assign alpha diversity values to each sample (Shannon, Faith's PPhylogenetic Diversity, Observed Features, 
+and Chao1) and plot using geom_boxplot from ggplot2. Shapiro test was used to determine data normality. 
+Kruskal-Wallis test followed by Wilcoxon rank sum test with Benjamini-Hochberg (BH) correction were used to test significance of each indices.
+
+
+R Script: 
+Path: project 2/Aim 2/Condition_smoking_status_alpha_diveristy.R
+
+Output files:
+chao1_richness.png
+faith_pd_plot.png
+observed_features.png
+shannon_diversity.png
+
+Results:
+All output files are in the file path: project 2/Aim 2/. Chao1 and Observed features showed significance between UC and CD non-smokers, with a p-value of 0.012 for both 
+(wilcoxon rank sum test with Benjamini-Hochberg (BH) correction). p-values greater than 0.5 for the rest of the tests (both Kruskal-wallis and Wilcoxon)
+
+Discussion/Future Direction:
+Significant differences in microbial richness (Chao1 and Observed Features) between UC and CD non-smokers (p = 0.012). 
+This suggests that the underlying disease condition affects microbial richness in non-smokers. However, no significant differences were observed for smokers or the other indices.
+Hypothesis: Smoking may introduce variability that masks condition-specific differences. 
+
+Since DESeq2 and beta diversity analyses (Bray-Curtis, unweighted UniFrac, and weighted UniFrac) failed to identify distinct patterns or core differences 
+in microbial taxa or community composition between UC and CD non-smokers, future work should focus on other tools to uncover variations driving the observed richness differences.
+Investigating how smoking alters microbial composition and potentially masks condition-specific patterns could provide further insights. 
+Expanding the sample size or conducting longitudinal studies may help detect shifts in microbial diversity and functionality.
+Future analysis should use Dunn's test for more robust post hoc pairwise comparisons.
