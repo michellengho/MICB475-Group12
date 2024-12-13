@@ -1,4 +1,4 @@
-# November5, 2024
+# November 5, 2024
 
 ## Meeting Agenda
 - QIIME2 output problems
