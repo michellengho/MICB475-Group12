@@ -1,16 +1,6 @@
 ssh root@10.19.139.191
 Biome3002
 
-scp root@ssh root@10.19.139.191:/data/project2_data/demux_seqs.qza .
-
-
-## Create manifest.csv 
-
-Use less, if two column, for file path: paired, if it is single absolute, one will be single. 
-
-screen -S demux
-
-
 ## Importing manifest.tsv file and demultiplexing into .qza file
 
 qiime tools import \
@@ -19,137 +9,105 @@ qiime tools import \
   --input-path /mnt/datasets/project_2/human_ibd/ryan_manifest.tsv \
   --output-path demux_seqs.qza
 
-
-
-All the sequences are paired-end right? I used less to check and ours is indeed pair end!
-
-
 # Create visualization of demultiplexed samples
 qiime demux summarize \
   --i-data demux_seqs.qza \
   --o-visualization demux_seqs.qzv
 
-scp root@ssh root@10.19.139.191:/data/project2_data/demux_seqs.qzv .
+## Trimmingthe Illumina adaptors from the reads
 
+qiime cutadapt trim-paired \
+--i-demultiplexed-sequences demux_seqs.qza \
+--p-front-f TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCCTACGGGNGGCWGCAG \
+--p-front-r GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAGGACTACHVGGGTATCTAATCC \
+--p-match-read-wildcards \
+--p-match-adapter-wildcards \
+--p-discard-untrimmed \
+--o-trimmed-sequences 1a_demux_seqs-trimmed.qza \
+--verbose > cutadapt-log-2.txt
 
-screen -S denoise3
-screen -r denoise3
-  
-
+screen -S denoise
 qiime dada2 denoise-paired \
-  --i-demultiplexed-seqs demux_seqs.qza \
-  --p-trunc-len-f 300 \
-  --p-trunc-len-r 300 \
+  --i-demultiplexed-seqs 1a_demux_seqs-trimmed.qza \
+  --p-trunc-len-f 220 \
+  --p-trunc-len-r 220 \
   --o-representative-sequences rep-seqs.qza \
   --o-table table.qza \
   --o-denoising-stats stats.qza
 
 
-screen -S visualize_stats
 
-# Visualize DADA2 stats
-qiime metadata tabulate \
-  --m-input-file stats.qza \
-  --o-visualization stats.qzv
+qiime feature-classifier fit-classifier-naive-bayes \ --i-reference-reads /data/project2_data/ref-seqs-trimmed.qza \ --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \ --o-classifier classifier.qza
 
 
-scp -r ryan_metadata_2.0.tsv root@10.19.139.191:/data/project2_data/
+qiime feature-classifier extract-reads \
+--i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \
+--p-f-primer CCTACGGGNGGCWGCAG \
+--p-r-primer GACTACHVGGGTATCTAATCC \
+--p-trunc-len 220 \
+--o-reads ref-seqs-trimmed.qza
 
-screen -S visualize_ASVs
-
-# Visualize ASVs stats
-qiime feature-table summarize \
-  --i-table table.qza \
-  --o-visualization table.qzv \
-  --m-sample-metadata-file /data/project2_data/ryan_metadata_2.0.tsv
-
-scp root@ssh root@10.19.139.191:/data/project2_data/table2.qzv .
-
-screen -S visualize_feature-table
-
-qiime feature-table tabulate-seqs \
-  --i-data rep-seqs.qza \
-  --o-visualization rep-seqs.qzv
-
-
-
-
-  ## Taxonomy Analysis
-#Extract your amplicon of interest from the reference database
-#replace the ref-otus.qza with the representative sequence file on the server (e.g. /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza)
-#replace primer sequences with your correct sequences
-#replace trunc-len with the one you defined in your denoising step
-
-screen -r denoise3
-screen -S fc
-screen -r fc
-
-qiime feature-classifier extract-reads \ --i-sequences /mnt/datasets/silva_ref_files/silva-138-99-seqs.qza \ --p-f-primer CCTACGGGNGGCWGCAG \ --p-r-primer GACTACHVGGGTATCTAATCC \ --p-trunc-len 140 \ --o-reads ref-seqs-trimmed.qza
-
-screen -S fcfcnb
-screen -r fcfcnb
-
-qiime feature-classifier fit-classifier-naive-bayes \ --i-reference-reads ref-seqs-trimmed.qza \ --i-reference-taxonomy /mnt/datasets/silva_ref_files/silva-138-99-tax.qza \ --o-classifier classifier.qza
-
-screen -S assign_taxon
 
 # Use the trained classifier to assign taxonomy to your reads (rep-seqs.qza)
 qiime feature-classifier classify-sklearn \
   --i-classifier classifier.qza \
-  --i-reads rep-seqs.qza \
+  --i-reads /mnt/datasets/project_2/human_ibd/HG_files/1b_rep-features-trimmed.qza \
   --o-classification taxonomy.qza
+
 
 #Create Visualization
 qiime metadata tabulate \
   --m-input-file taxonomy.qza \
   --o-visualization taxonomy.qzv
-  
-screen -S taxonomy_barplots
+
 
 # Taxonomy barplots
 qiime taxa barplot \
-  --i-table table.qza \
+  --i-table /data/project2_data/table.qza \
   --i-taxonomy taxonomy.qza \
-  --m-metadata-file /data/project2_data/ryan_metadata_2.0.tsv \
+  --m-metadata-file /data/project2_data/ryan_metadata_new.tsv \
   --o-visualization taxa-bar-plots.qzv
 
-screen -S filter_mitochon
-
-#Filtering out mitochondria and chloroplast 
 qiime taxa filter-table \
   --i-table table.qza \
   --i-taxonomy taxonomy.qza \
   --p-exclude mitochondria,chloroplast \
   --o-filtered-table table-no-mitochondria-no-chloroplast.qza
 
-#Exporting for R
-
-Feature table.txt
-Metadata.tsv
-taxonomy.tsv
-qiime tools export \
---input-path ~/data/project2_data/table.qza \
---output-path table_export 
-
-biom convert \
--i feature-table.biom \
---to-tsv \
--o feature-table.txt
+qiime taxa filter-table \
+  --i-table table.qza \
+  --i-taxonomy taxonomy2.qza \
+  --p-exclude Mitochondria,Chloroplast \
+  --o-filtered-table table-no-mitochondria-no-chloroplast.qza
 
 
-# Generate a tree for phylogenetic diversity analyses
-qiime phylogeny align-to-tree-mafft-fasttree \
-  --i-sequences rep-seqs.qza \
-  --o-alignment aligned-rep-seqs.qza \
-  --o-masked-alignment masked-aligned-rep-seqs.qza \
-  --o-tree unrooted-tree.qza \
-  --o-rooted-tree rooted-tree.qza 
 
 # Alpha-rarefaction
 qiime diversity alpha-rarefaction \
   --i-table table.qza \
   --i-phylogeny rooted-tree.qza \
-  --p-max-depth 6000 \
-  --m-metadata-file metadata_2.0.tsv \
+  --p-max-depth 8000 \
+  --m-metadata-file /data/project2_data/ryan_metadata_new.tsv \
   --o-visualization alpha-rarefaction.qzv
 
+
+# Alpha-rarefaction
+qiime diversity alpha-rarefaction \
+  --i-table table.qza \
+  --i-phylogeny rooted-tree.qza \
+  --p-max-depth 6484 \
+  --m-metadata-file /data/project2_data/ryan_metadata_new.tsv \
+  --o-visualization alpha-rarefaction2.qzv
+
+qiime tools export \
+--input-path ~/data/project2_data2/table.qza \
+--output-path table_export 
+
+biom convert \
+-i /data/project2_data2/table_export/feature-table.biom \
+--to-tsv \
+-o feature-table.txt
+
+qiime tools export \
+  --input-path rooted-tree.qza \
+  --output-path /data/project2_data2/table_export/
